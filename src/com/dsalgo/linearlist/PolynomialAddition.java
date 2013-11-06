@@ -50,23 +50,76 @@ import java.util.*;
  */
 public class PolynomialAddition {
 
-	static class DescendComparator implements Comparator<Integer>{
-		@Override
-		public int compare(Integer o1, Integer o2) {
-			return o2.compareTo(o1);
+	static class Node {
+		public int coefficient;
+		public int exponent;
+		public Node next;
+
+		Node(int coefficient, int exponent){
+			this.coefficient = coefficient;
+			this.exponent = exponent;
+			next = null;
 		}
 	}
 
-	public static void main(String args[]) throws Exception {
+	static class Polynomial {
+		public Node head;
 
+		public void addNode (int coefficient, int exponent) {
+			if (head == null) {
+				head = new Node(coefficient, exponent);
+				return;
+			}
+
+			if (head.exponent < exponent) {
+				Node added = new Node(coefficient, exponent);
+				added.next = head;
+				head = added;
+				return;
+			} else if (head.exponent == exponent) {
+				head.coefficient += coefficient;
+				return;
+			}
+
+			Node current = head;
+			while (current.next != null) {
+				if (current.next.exponent > exponent) {
+					current = current.next;
+				} else if (current.next.exponent < exponent) {
+					Node added = new Node(coefficient, exponent);
+					added.next = current.next;
+					current.next = added;
+					return ;
+				} else {
+					current.next.coefficient += coefficient;
+					return ;
+				}
+			}
+			current.next = new Node(coefficient, exponent);
+		}
+
+		public String toString () {
+			if (head == null) {
+				return "";
+			} else {
+				Node cursor = head;
+				String str = "";
+				while (cursor != null) {
+					str += "[ " + cursor.coefficient + " " + cursor.exponent + " ] ";
+					cursor = cursor.next;
+				}
+				return str.substring(0, str.length()-1);
+			}
+		}
+	}
+
+	public static void main (String args[]) throws Exception {
 		BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
 		int count = Integer.parseInt(stdin.readLine());
 
-
-		Comparator<Integer> descendComparator = new DescendComparator();
 		for (int i = 0; i < count; i++) {
-			Map polynomialMapA = new TreeMap<Integer, Integer>(descendComparator);
-			Map polynomialMapB = new TreeMap<Integer, Integer>(descendComparator);
+			Polynomial polynomialA = new Polynomial();
+			Polynomial polynomialB = new Polynomial();
 
 			StringTokenizer token = new StringTokenizer(stdin.readLine());
 			int coefficient, exponent;
@@ -74,33 +127,25 @@ public class PolynomialAddition {
 			while (token.hasMoreElements()) {
 				coefficient = Integer.parseInt(token.nextToken());
 				exponent = Integer.parseInt(token.nextToken());
-				if (polynomialMapA.containsKey(exponent)) {
-					coefficient += (Integer) polynomialMapA.get(exponent);
-				}
-				polynomialMapA.put(exponent, coefficient);
+				polynomialA.addNode(coefficient, exponent);
+//				System.out.println(polynomialA.toString());
 			}
 
 			token = new StringTokenizer(stdin.readLine());
 			while (token.hasMoreElements()) {
 				coefficient = Integer.parseInt(token.nextToken());
 				exponent = Integer.parseInt(token.nextToken());
-				if (polynomialMapB.containsKey(exponent)) {
-					coefficient += (Integer) polynomialMapB.get(exponent);
-				}
-				polynomialMapB.put(exponent, coefficient);
+				polynomialB.addNode(coefficient, exponent);
+//				System.out.println(polynomialB.toString());
 			}
 
-			Set<Map.Entry<Integer, Integer>> exponentSetA = polynomialMapA.entrySet();
-			Iterator<Map.Entry<Integer, Integer>> iterA = exponentSetA.iterator();
-			Map.Entry<Integer, Integer> entryA = iterA.next();
-			int coefficientA = entryA.getValue();
-			int exponentA = entryA.getKey();
+			Node nodeA = polynomialA.head;
+			Node nodeB = polynomialB.head;
 
-			Set<Map.Entry<Integer, Integer>> exponentSetB = polynomialMapB.entrySet();
-			Iterator<Map.Entry<Integer, Integer>> iterB = exponentSetB.iterator();
-			Map.Entry<Integer, Integer> entryB = iterB.next();
-			int coefficientB = entryB.getValue();
-			int exponentB = entryB.getKey();
+			int coefficientA = nodeA.coefficient;
+			int exponentA = nodeA.exponent;
+			int coefficientB = nodeB.coefficient;
+			int exponentB = nodeB.exponent;
 
 			String line = "";
 			while (exponentA >=0 || exponentB >= 0) {
@@ -108,26 +153,26 @@ public class PolynomialAddition {
 					if (coefficientB != 0) {
 						line += "[ " + coefficientB + " " + exponentB + " ] ";
 					}
-					entryB = iterB.next();
-					coefficientB = entryB.getValue();
-					exponentB = entryB.getKey();
+					nodeB = nodeB.next;
+					coefficientB = nodeB.coefficient;
+					exponentB = nodeB.exponent;
 				} else if (exponentA > exponentB) {
 					if (coefficientA != 0) {
 						line += "[ " + coefficientA + " " + exponentA + " ] ";
 					}
-					entryA = iterA.next();
-					coefficientA = entryA.getValue();
-					exponentA = entryA.getKey();
+					nodeA = nodeA.next;
+					coefficientA = nodeA.coefficient;
+					exponentA = nodeA.exponent;
 				} else {
 					if (coefficientA + coefficientB != 0) {
 						line += "[ " + (coefficientA + coefficientB) + " " + exponentA + " ] ";
 					}
-					entryA = iterA.next();
-					coefficientA = entryA.getValue();
-					exponentA = entryA.getKey();
-					entryB = iterB.next();
-					coefficientB = entryB.getValue();
-					exponentB = entryB.getKey();
+					nodeA = nodeA.next;
+					coefficientA = nodeA.coefficient;
+					exponentA = nodeA.exponent;
+					nodeB = nodeB.next;
+					coefficientB = nodeB.coefficient;
+					exponentB = nodeB.exponent;
 				}
 			}
 			if (line.length() > 0) {
