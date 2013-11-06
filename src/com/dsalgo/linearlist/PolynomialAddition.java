@@ -97,20 +97,6 @@ public class PolynomialAddition {
 			}
 			current.next = new Node(coefficient, exponent);
 		}
-
-		public String toString () {
-			if (head == null) {
-				return "";
-			} else {
-				Node cursor = head;
-				String str = "";
-				while (cursor != null) {
-					str += "[ " + cursor.coefficient + " " + cursor.exponent + " ] ";
-					cursor = cursor.next;
-				}
-				return str.substring(0, str.length()-1);
-			}
-		}
 	}
 
 	public static void main (String args[]) throws Exception {
@@ -128,7 +114,6 @@ public class PolynomialAddition {
 				coefficient = Integer.parseInt(token.nextToken());
 				exponent = Integer.parseInt(token.nextToken());
 				polynomialA.addNode(coefficient, exponent);
-//				System.out.println(polynomialA.toString());
 			}
 
 			token = new StringTokenizer(stdin.readLine());
@@ -136,7 +121,6 @@ public class PolynomialAddition {
 				coefficient = Integer.parseInt(token.nextToken());
 				exponent = Integer.parseInt(token.nextToken());
 				polynomialB.addNode(coefficient, exponent);
-//				System.out.println(polynomialB.toString());
 			}
 
 			Node nodeA = polynomialA.head;
@@ -183,4 +167,93 @@ public class PolynomialAddition {
 		}
 	}
 
+	/////////////////////下面使用了TreeMap，也可以成功///////////////
+	/*
+	static class DescendComparator implements Comparator<Integer>{
+		@Override
+		public int compare(Integer o1, Integer o2) {
+			return o2.compareTo(o1);
+		}
+	}
+
+	public static void main(String args[]) throws Exception {
+
+		BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
+		int count = Integer.parseInt(stdin.readLine());
+
+
+		Comparator<Integer> descendComparator = new DescendComparator();
+		for (int i = 0; i < count; i++) {
+			Map polynomialMapA = new TreeMap<Integer, Integer>(descendComparator);
+			Map polynomialMapB = new TreeMap<Integer, Integer>(descendComparator);
+
+			StringTokenizer token = new StringTokenizer(stdin.readLine());
+			int coefficient, exponent;
+
+			while (token.hasMoreElements()) {
+				coefficient = Integer.parseInt(token.nextToken());
+				exponent = Integer.parseInt(token.nextToken());
+				if (polynomialMapA.containsKey(exponent)) {
+					coefficient += (Integer) polynomialMapA.get(exponent);
+				}
+				polynomialMapA.put(exponent, coefficient);
+			}
+
+			token = new StringTokenizer(stdin.readLine());
+			while (token.hasMoreElements()) {
+				coefficient = Integer.parseInt(token.nextToken());
+				exponent = Integer.parseInt(token.nextToken());
+				if (polynomialMapB.containsKey(exponent)) {
+					coefficient += (Integer) polynomialMapB.get(exponent);
+				}
+				polynomialMapB.put(exponent, coefficient);
+			}
+
+			Set<Map.Entry<Integer, Integer>> exponentSetA = polynomialMapA.entrySet();
+			Iterator<Map.Entry<Integer, Integer>> iterA = exponentSetA.iterator();
+			Map.Entry<Integer, Integer> entryA = iterA.next();
+			int coefficientA = entryA.getValue();
+			int exponentA = entryA.getKey();
+
+			Set<Map.Entry<Integer, Integer>> exponentSetB = polynomialMapB.entrySet();
+			Iterator<Map.Entry<Integer, Integer>> iterB = exponentSetB.iterator();
+			Map.Entry<Integer, Integer> entryB = iterB.next();
+			int coefficientB = entryB.getValue();
+			int exponentB = entryB.getKey();
+
+			String line = "";
+			while (exponentA >=0 || exponentB >= 0) {
+				if (exponentA < exponentB) {
+					if (coefficientB != 0) {
+						line += "[ " + coefficientB + " " + exponentB + " ] ";
+					}
+					entryB = iterB.next();
+					coefficientB = entryB.getValue();
+					exponentB = entryB.getKey();
+				} else if (exponentA > exponentB) {
+					if (coefficientA != 0) {
+						line += "[ " + coefficientA + " " + exponentA + " ] ";
+					}
+					entryA = iterA.next();
+					coefficientA = entryA.getValue();
+					exponentA = entryA.getKey();
+				} else {
+					if (coefficientA + coefficientB != 0) {
+						line += "[ " + (coefficientA + coefficientB) + " " + exponentA + " ] ";
+					}
+					entryA = iterA.next();
+					coefficientA = entryA.getValue();
+					exponentA = entryA.getKey();
+					entryB = iterB.next();
+					coefficientB = entryB.getValue();
+					exponentB = entryB.getKey();
+				}
+			}
+			if (line.length() > 0) {
+				System.out.println(line.substring(0, line.length() - 1));
+			} else {
+				System.out.println();
+			}
+		}
+	} */
 }
