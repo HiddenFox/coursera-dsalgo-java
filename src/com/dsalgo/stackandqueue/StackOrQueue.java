@@ -114,6 +114,48 @@ public class StackOrQueue {
 		}
 	}
 
+	/**
+	 * 用数组实现的栈
+	 */
+	public static class ArrayStack {
+		private static final int MAX_LENGTH = 128;
+		private int[] elements;
+		private int head;
+		private int tail;
+		private int length;
+
+		public ArrayStack() {
+			this.elements = new int[MAX_LENGTH];
+			this.head = 0;
+			this.tail = 0;
+			this.length = 0;
+		}
+
+		public void enQueue(int value) {
+			if (this.length < MAX_LENGTH-1) {
+				elements[head] = value;
+				head = (head + 1) % MAX_LENGTH;
+				length++;
+			}
+		}
+
+		public boolean deQueue(int value) {
+			if (length > 0) {
+				if (elements[tail] == value) {
+					tail = (tail + 1) % MAX_LENGTH;
+					length--;
+					return true;
+				} else {
+					tail = (tail + 1) % MAX_LENGTH;
+					length--;
+					return false;
+				}
+			} else {
+				return false;
+			}
+		}
+	}
+
 	public static void main (String args[]) throws Exception {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 		int t = Integer.parseInt(reader.readLine());
@@ -126,7 +168,8 @@ public class StackOrQueue {
 			isQueue = true;
 			int n = Integer.parseInt(reader.readLine());
 
-			LinkStack stack = new LinkStack();
+			//LinkStack stack = new LinkStack();
+			ArrayStack stack = new ArrayStack();
 
 			for (int j=0; j<n; j++) {
 				st = new StringTokenizer(reader.readLine());
