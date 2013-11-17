@@ -52,12 +52,12 @@ import java.util.StringTokenizer;
  */
 public class BasicStackOperation {
 
-	public static class MyStack {
+	public static class ArrayStack {
 		private int[] elements;
 		private int length;
 
-		public MyStack() {
-			elements = new int[200];
+		public ArrayStack() {
+			elements = new int[100];
 			length = 0;
 		}
 
@@ -66,7 +66,7 @@ public class BasicStackOperation {
 		}
 
 		public boolean push(int number) {
-			if (length < 200) {
+			if (length < 99) {
 				elements[length++] = number;
 				return true;
 			} else {
@@ -83,11 +83,80 @@ public class BasicStackOperation {
 			}
 		}
 
-		@Override
 		public String toString() {
 			String strReturn = "";
 			for (int i=0; i<length; i++) {
 				strReturn += elements[i] + " ";
+			}
+			return strReturn;
+		}
+	}
+
+
+	public static class Node {
+		public int value;
+		public Node next;
+
+		public Node(int value) {
+			this.value = value;
+			this.next = null;
+		}
+	}
+
+	public static class LinkStack {
+		public Node head;
+
+		public LinkStack() {
+			this.head = null;
+		}
+
+		public int size() {
+			int size = 0;
+			Node cursor = head;
+			while (cursor != null) {
+				size++;
+				cursor = cursor.next;
+			}
+			return size;
+		}
+
+		public boolean push(int value) {
+			Node current = new Node(value);
+			if (head == null) {
+				head = current;
+			} else {
+				Node cursor = head;
+				while (cursor.next != null) {
+					cursor = cursor.next;
+				}
+				cursor.next = current;
+			}
+			return true;
+		}
+
+		public boolean pop() {
+			if (head != null) {
+				if (head.next == null) {
+					head = null;
+				} else {
+					Node cursor = head;
+					while (cursor.next.next != null) {
+						cursor = cursor.next;
+					}
+					cursor.next = null;
+				}
+				return true;
+			} else {
+				return false;
+			}
+		}
+
+		public String toString() {
+			String strReturn = "";
+			Node cursor = head;
+			while (cursor != null) {
+				strReturn += cursor.value + " ";
+				cursor = cursor.next;
 			}
 			return strReturn;
 		}
@@ -104,7 +173,8 @@ public class BasicStackOperation {
 			isSuccess = true;
 			int n = Integer.parseInt(reader.readLine());
 
-			MyStack stack = new MyStack();
+			//ArrayStack stack = new ArrayStack();
+			LinkStack stack = new LinkStack();
 
 			for (int j=0; j<n; j++) {
 				StringTokenizer st = new StringTokenizer(reader.readLine());
@@ -120,8 +190,9 @@ public class BasicStackOperation {
 			}
 
 			if (isSuccess) {
-				if (stack.size() > 0)
-				System.out.println(stack.toString());
+				if (stack.size() > 0) {
+					System.out.println(stack.toString());
+				}
 			} else {
 				System.out.println("error");
 			}
