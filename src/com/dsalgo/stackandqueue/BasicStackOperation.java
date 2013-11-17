@@ -52,6 +52,9 @@ import java.util.StringTokenizer;
  */
 public class BasicStackOperation {
 
+	/**
+	 * 用数组实现的栈
+	 */
 	public static class ArrayStack {
 		private int[] elements;
 		private int length;
@@ -92,7 +95,9 @@ public class BasicStackOperation {
 		}
 	}
 
-
+	/**
+	 * 链表的节点
+	 */
 	public static class Node {
 		public int value;
 		public Node next;
@@ -103,6 +108,9 @@ public class BasicStackOperation {
 		}
 	}
 
+	/**
+	 * 用链表实现的栈
+	 */
 	public static class LinkStack {
 		public Node head;
 
@@ -184,13 +192,13 @@ public class BasicStackOperation {
 						currentNumber = Integer.parseInt(st.nextToken());
 						stack.push(currentNumber);
 					} else {
-						isSuccess = stack.pop();	//不能break，命令要读完
+						isSuccess = stack.pop();	//即使失败了也不能马上break，要把后面的命令读完
 					}
 				}
 			}
 
 			if (isSuccess) {
-				if (stack.size() > 0) {
+				if (stack.size() > 0) {   //栈空的时候不输出
 					System.out.println(stack.toString());
 				}
 			} else {
