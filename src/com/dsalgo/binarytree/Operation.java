@@ -8,7 +8,7 @@ import java.util.StringTokenizer;
  * http://dsalgo.openjudge.cn/dsmoochw5/1/
  *
  * Author: Frank Han (trendhanfeng@gmail.com)
- * Date: 13-11-6
+ * Date: 14-4-13
  */
 
 public class Operation {
@@ -95,12 +95,15 @@ public class Operation {
             } else {
                 parent1.rightChild = node2;
             }
+            // BUG3: forget to change the parent
+            node2.parent = parent1;
 
             if (isNode2LeftChild) {
                 parent2.leftChild = node1;
             } else {
                 parent2.rightChild = node1;
             }
+            node1.parent = parent2;
         }
 
         public int getLeftValue(int currentValue) {
@@ -127,14 +130,19 @@ public class Operation {
             int operationCount = Integer.parseInt(tokenizer.nextToken());
 
             Tree tree = new Tree();
+            int[][] input = new int[nodeCount][2];
+            // BUG2: omit the situation the input value are not in order
             for (int j = 0; j < nodeCount; j++) {
                 String line = reader.readLine();
                 tokenizer = new StringTokenizer(line);
-
-                tree.addNode(Integer.parseInt(tokenizer.nextToken()),
-                        Integer.parseInt(tokenizer.nextToken()),
-                        Integer.parseInt(tokenizer.nextToken()));
+                int value = Integer.parseInt(tokenizer.nextToken());
+                input[value][0] = Integer.parseInt(tokenizer.nextToken());
+                input[value][1] = Integer.parseInt(tokenizer.nextToken());
             }
+            for (int j = 0; j < nodeCount; j++) {
+                tree.addNode(j, input[j][0], input[j][1]);
+            }
+
 
             for (int j = 0; j < operationCount; j++) {
                 String line = reader.readLine();
@@ -144,6 +152,7 @@ public class Operation {
                     tree.switchNode(Integer.parseInt(tokenizer.nextToken()),
                             Integer.parseInt(tokenizer.nextToken()));
                 } else {
+                    // BUG1: "2".equals(tokenizer.nextToken()) retrieve an extra token
                     System.out.println(tree.getLeftValue(Integer.parseInt(tokenizer.nextToken())));
                 }
             }
