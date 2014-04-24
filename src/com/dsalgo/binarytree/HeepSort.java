@@ -68,7 +68,6 @@ public class HeepSort {
     }
 
     public static void main (String args[]) throws Exception {
-        System.out.println((int)-0.5);
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         int round = Integer.parseInt(reader.readLine());
 
